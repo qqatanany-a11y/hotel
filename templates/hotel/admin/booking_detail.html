@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Booking Details" %} {{ booking.booking_id }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="fas fa-file-invoice me-2"></i>{% trans "Booking Details" %} {{ booking.booking_id }}
+                </h1>
+                <div class="btn-group">
+                    <a href="{% url 'admin_bookings' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Bookings" %}
+                    </a>
+                    <button class="btn btn-info" onclick="printBooking()">
+                        <i class="fas fa-print me-2"></i>{% trans "Print" %}
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>{% trans "Booking Information" %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>{% trans "Booking Number:" %}</strong></td>
+                                            <td>{{ booking.booking_id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Booking Date:" %}</strong></td>
+                                            <td>{{ booking.created_at|date:"Y-m-d H:i" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Last Updated:" %}</strong></td>
+                                            <td>{{ booking.updated_at|date:"Y-m-d H:i" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Status:" %}</strong></td>
+                                            <td>
+                                                {% if booking.status == 'pending' %}
+                                                <span class="badge bg-warning">{{ booking.get_status_display }}</span>
+                                                {% elif booking.status == 'confirmed' %}
+                                                <span class="badge bg-success">{{ booking.get_status_display }}</span>
+                                                {% elif booking.status == 'checked_in' %}
+                                                <span class="badge bg-info">{{ booking.get_status_display }}</span>
+                                                {% elif booking.status == 'checked_out' %}
+                                                <span class="badge bg-secondary">{{ booking.get_status_display }}</span>
+                                                {% elif booking.status == 'cancelled' %}
+                                                <span class="badge bg-danger">{{ booking.get_status_display }}</span>
+                                                {% else %}
+                                                <span class="badge bg-light text-dark">{{ booking.get_status_display }}</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>{% trans "Check-in Date:" %}</strong></td>
+                                            <td>{{ booking.check_in_date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Check-out Date:" %}</strong></td>
+                                            <td>{{ booking.check_out_date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Number of Nights:" %}</strong></td>
+                                            <td>{{ booking.get_nights }} {% trans "night" %}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Total Guests:" %}</strong></td>
+                                            <td>{{ booking.get_total_guests }} ({{ booking.adults }} {% trans "adult" %}, {{ booking.children }} {% trans "child" %})</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            {% if booking.special_requests %}
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <h6 class="text-primary">
+                                        <i class="fas fa-comment me-2"></i>{% trans "Special Requests" %}
+                                    </h6>
+                                    <div class="bg-light p-3 rounded">
+                                        {{ booking.special_requests }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user me-2"></i>{% trans "Guest Information" %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>{% trans "Name:" %}</strong></td>
+                                            <td>{{ booking.guest.get_full_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Email:" %}</strong></td>
+                                            <td>{{ booking.guest.user.email }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Phone:" %}</strong></td>
+                                            <td>{{ booking.guest.phone }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td><strong>{% trans "National ID:" %}</strong></td>
+                                            <td>{{ booking.guest.national_id|default:"Not specified" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Nationality:" %}</strong></td>
+                                            <td>{{ booking.guest.nationality }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>{% trans "Registration Date:" %}</strong></td>
+                                            <td>{{ booking.guest.created_at|date:"Y-m-d" }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-bed me-2"></i>{% trans "Room Information" %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {% if booking.room.room_type.image %}
+                                    <img src="{{ booking.room.room_type.image.url }}"
+                                         class="img-fluid rounded"
+                                         alt="{{ booking.room.room_type.get_name_display }}">
+                                    {% else %}
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-bed fa-3x text-muted"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    <h4>{{ booking.room.room_type.get_name_display }}</h4>
+                                    <p class="text-muted">{{ booking.room.room_type.description }}</p>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>{% trans "Room Number:" %}</strong> {{ booking.room.room_number }}
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>{% trans "Floor:" %}</strong> {{ booking.room.floor }}
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>{% trans "Base Price:" %}</strong> {{ booking.room.room_type.base_price }} {% trans "JOD/night" %}
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>{% trans "Maximum:" %}</strong> {{ booking.room.room_type.max_occupancy }} {% trans "person" %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-edit me-2"></i>{% trans "Update Booking Status" %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% crispy form %}
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-calculator me-2"></i>{% trans "Cost Summary" %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>{% trans "Room Price:" %}</span>
+                                <span>{{ booking.room.room_type.base_price }} × {{ booking.get_nights }}</span>
+                            </div>
+
+                            {% if services %}
+                            <div class="mb-2">
+                                <strong>{% trans "Additional Services:" %}</strong>
+                                {% for service in services %}
+                                <div class="d-flex justify-content-between small">
+                                    <span>{{ service.service.name }}</span>
+                                    <span>{{ service.total_price }} {% trans "JOD" %}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold fs-5">
+                                <span>{% trans "Total:" %}</span>
+                                <span class="text-success">{{ booking.total_amount }} {% trans "JOD" %}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if payments %}
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-credit-card me-2"></i>{% trans "Payments" %}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% for payment in payments %}
+                            <div class="border-bottom pb-2 mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ payment.amount }} {% trans "JOD" %}</span>
+                                    <span class="badge bg-{% if payment.status == 'completed' %}success{% elif payment.status == 'pending' %}warning{% else %}danger{% endif %}">
+                                        {% if payment.status == 'pending' %}
+                                        {% trans "Waiting for payment" %}
+                                        {% else %}
+                                        {{ payment.get_status_display }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <small class="text-muted">
+                                    {{ payment.get_payment_method_display }} - {{ payment.created_at|date:"Y-m-d H:i" }}
+                                </small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function printBooking() {
+        window.print();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('#div_id_status form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>{% trans "Updating..." %}';
+                    submitBtn.disabled = true;
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+

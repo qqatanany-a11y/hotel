@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Cancel Booking" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-danger text-white text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>{% trans "Confirm Booking Cancellation" %}
+                    </h3>
+                </div>
+                <div class="card-body p-5">
+                    <div class="alert alert-warning" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>{% trans "Important Notice" %}
+                        </h5>
+                        <p class="mb-0">
+                            {% trans "You are about to cancel your booking. This action cannot be undone. Please review the booking details below before proceeding." %}
+                        </p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-info-circle me-2"></i>{% trans "Booking Details" %}
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>{% trans "Booking Number:" %}</strong></td>
+                                    <td>{{ booking.booking_id }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{% trans "Status:" %}</strong></td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ booking.get_status_display }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{% trans "Booking Date:" %}</strong></td>
+                                    <td>{{ booking.created_at|date:"Y-m-d H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-bed me-2"></i>{% trans "Room and Stay Details" %}
+                            </h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>{% trans "Room Type:" %}</strong></td>
+                                    <td>{{ booking.room.room_type.get_name_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{% trans "Room Number:" %}</strong></td>
+                                    <td>{{ booking.room.room_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{% trans "Check-in Date:" %}</strong></td>
+                                    <td>{{ booking.check_in_date }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{% trans "Check-out Date:" %}</strong></td>
+                                    <td>{{ booking.check_out_date }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{% trans "Number of Nights:" %}</strong></td>
+                                    <td>{{ booking.get_nights }} {% trans "nights" %}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>{% trans "Number of Guests:" %}</strong></td>
+                                    <td>{{ booking.get_total_guests }} {% trans "guests" %}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="bg-light p-3 rounded">
+                                <h6 class="text-primary mb-2">
+                                    <i class="fas fa-calculator me-2"></i>{% trans "Cost Summary" %}
+                                </h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>{% trans "Total Amount:" %}</span>
+                                    <span class="fw-bold text-danger fs-5">{{ booking.total_amount }} {% trans "JOD" %}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if booking.special_requests %}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h6 class="text-primary mb-2">
+                                <i class="fas fa-comment me-2"></i>{% trans "Special Requests" %}
+                            </h6>
+                            <div class="bg-light p-3 rounded">
+                                {{ booking.special_requests }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-info" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-question-circle me-2"></i>{% trans "Cancellation Policy" %}
+                        </h6>
+                        <ul class="mb-0">
+                            <li>{% trans "Booking can be cancelled 24 hours before check-in date" %}</li>
+                            <li>{% trans "Refund will be processed within 5-7 business days" %}</li>
+                            <li>{% trans "Cancellation fees may apply depending on timing" %}</li>
+                        </ul>
+                    </div>
+
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'booking_detail' booking.booking_id %}"
+                               class="btn btn-secondary btn-lg me-md-2 mb-2 mb-md-0">
+                                <i class="fas fa-arrow-left me-2"></i>{% trans "Back to Booking" %}
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-times me-2"></i>{% trans "Confirm Cancellation" %}
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <small class="text-muted">
+                            {% trans "For any inquiries, please contact customer service" %}
+                            <br>
+                            <i class="fas fa-phone me-1"></i>+962 782182081
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .table td {
+        padding: 0.5rem 0;
+        border: none;
+    }
+
+    .btn {
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+    .alert {
+        border-radius: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .d-md-flex {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+{% endblock %}
+

@@ -1,0 +1,337 @@
+﻿{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}Hotel Management{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* ===== Black & Gold Modern Django Admin Theme ===== */
+    body {
+        background-color: #0b0b0b !important;
+        color: #e5e5e5 !important;
+        font-family: "Poppins", "Segoe UI", sans-serif !important;
+    }
+
+    /* Header */
+    #header {
+        background: linear-gradient(135deg, #000000, #1a1a1a);
+        color: #d4af37 !important;
+        border-bottom: 2px solid #d4af37;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Branding */
+    #branding h1 a {
+        color: #d4af37 !important;
+        font-weight: 600;
+        font-size: 22px;
+        text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+    }
+
+    /* User tools */
+    #user-tools a {
+        color: #d4af37 !important;
+        font-weight: 500;
+    }
+
+        #user-tools a:hover {
+            color: #f1c232 !important;
+        }
+
+    /* Links */
+    a {
+        color: #d4af37 !important;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        a:hover {
+            color: #f1c232 !important;
+        }
+
+    /* Buttons */
+    .button, input[type="submit"], .submit-row input {
+        background: linear-gradient(135deg, #d4af37, #b68c22) !important;
+        color: #000 !important;
+        border-radius: 8px !important;
+        border: none !important;
+        padding: 8px 18px !important;
+        font-weight: 600;
+        cursor: pointer !important;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+        .button:hover, input[type="submit"]:hover, .submit-row input:hover {
+            background: linear-gradient(135deg, #f1c232, #d4af37) !important;
+            transform: translateY(-1px);
+        }
+
+    /* Inputs */
+    input, select, textarea {
+        background-color: #1a1a1a !important;
+        color: #f5f5f5 !important;
+        border: 1px solid #d4af37 !important;
+        border-radius: 6px !important;
+        padding: 8px !important;
+    }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #f1c232 !important;
+            box-shadow: 0 0 5px rgba(212,175,55,0.6);
+            outline: none !important;
+        }
+
+    /* ????? ?????? ??? */
+    #content {
+        max-width: 100% !important; /* ???? ?????? ???? ?????? */
+        margin: 0 !important; /* ???? ??????? ?? ??????? */
+        background: #111 !important;
+        border: 1px solid #d4af37;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 0 20px rgba(212,175,55,0.15);
+    }
+
+    /* Modules */
+    .module {
+        background-color: #141414 !important;
+        border-radius: 10px !important;
+        border: 1px solid #d4af37 !important;
+        box-shadow: 0 2px 10px rgba(212,175,55,0.2);
+        margin-bottom: 25px !important;
+    }
+
+        .module h2 {
+            color: #d4af37 !important;
+            border-bottom: 1px solid #d4af37 !important;
+            font-weight: 600;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+    /* Tables */
+    #changelist-form table {
+        border-collapse: collapse;
+        width: 100%;
+        background-color: #0f0f0f !important;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+        #changelist-form table th {
+            background-color: #1a1a1a !important;
+            color: #d4af37 !important;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #d4af37;
+        }
+
+        #changelist-form table td {
+            background-color: #0b0b0b !important;
+            color: #e5e5e5 !important;
+            border-bottom: 1px solid #1f1f1f;
+        }
+
+        #changelist-form table tr:hover td {
+            background-color: #1a1a1a !important;
+        }
+
+    /* Messages */
+    .messagelist .success {
+        background: #1a1a1a !important;
+        color: #d4af37 !important;
+        border-left: 4px solid #d4af37;
+    }
+
+    .messagelist .error {
+        background: #1a1a1a !important;
+        color: #f87171 !important;
+        border-left: 4px solid #d4af37;
+    }
+
+    /* Footer */
+    #footer {
+        background: #000;
+        color: #d4af37;
+        text-align: center;
+        padding: 12px;
+        border-top: 1px solid #d4af37;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    /* ===== Collapsible permission groups ===== */
+    .permission-group {
+        border: 1px solid #d4af37;
+        border-radius: 8px;
+        margin: 10px 0;
+        background-color: #111;
+        overflow: hidden;
+    }
+
+        .permission-group summary {
+            background: linear-gradient(135deg, #000, #1a1a1a);
+            color: #d4af37;
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+            .permission-group summary:hover {
+                background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            }
+
+        .permission-group[open] summary {
+            background: #1a1a1a;
+        }
+
+        .permission-group ul {
+            margin: 0;
+            padding: 10px 25px;
+            list-style: none;
+            border-top: 1px solid #d4af37;
+            background-color: #111;
+        }
+
+            .permission-group ul li {
+                padding: 5px 0;
+                color: #f1c232;
+                font-size: 13px;
+            }
+    /* ===== ????? ??? ??????? ??????? ??? ???? ===== */
+
+    /* ???? ?????? ?????? (Breadcrumb) */
+    #breadcrumbs {
+        background-color: #000 !important;
+        border-bottom: 1px solid #d4af37 !important;
+    }
+
+    /* ???? ?????? ??????? */
+    #changelist-filter,
+    #changelist-filter h2 {
+        background-color: #000 !important;
+        color: #d4af37 !important;
+        border-color: #d4af37 !important;
+    }
+    /* ===== ????? ??? ???? ?????? ?????? ??? ???? ===== */
+
+    /* ???? ????? Django ?????? id=breadcrumbs */
+    #breadcrumbs,
+    div.breadcrumbs {
+        background-color: #000 !important;
+        border-bottom: 1px solid #d4af37 !important;
+    }
+
+        /* ?????? ???? ???? ????? ?????? */
+        #breadcrumbs a,
+        div.breadcrumbs a,
+        #breadcrumbs span,
+        div.breadcrumbs span {
+            color: #d4af37 !important;
+        }
+    /* إخفاء Recent actions نهائياً */
+    #recent-actions-module {
+        display: none !important;
+    }
+    /* إلغاء عمود الجانب في صفحة الداشبورد فقط */
+    body.dashboard #content-related {
+        display: none  !important;
+         
+    }
+    /* توسعة العمود الرئيسي بعد إخفاء الـ sidebar */
+    body.dashboard #content-main {
+        width: 100% !important;
+        float: none !important;
+        margin: 0 !important;
+    }
+    /* إزالة أي تخطيط أعمدة قديم */
+    body.dashboard .colMS, body.dashboard .colSM {
+        width: 100% !important;
+        float: none !important;
+    }
+    /* منع الفراغ الجانبي وتوسيط المحتوى */
+    body.dashboard #content {
+        max-width: 50% !important;
+        margin: 0 auto !important;
+    }
+    /* تأكيد اتساع البوكسات */
+    body.dashboard .module {
+        width: 50%   !important;
+         
+    }
+    /* نزّل البوكس عن الهيدر قليلاً */
+    body.dashboard #content {
+        margin-top: 24px !important;
+    }
+
+        /* إن لم يتغيّر, طبّق على أول module داخل المحتوى */
+        body.dashboard #content .module:first-of-type {
+            margin-top: 24px  !important;
+             
+        }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Hotel Management</a></h1>
+{% endblock %}
+
+{% block content_title %}
+<h1>Hotel Management</h1>
+{% endblock %}
+
+{% block footer %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".permission-group summary").forEach(function (summary) {
+            summary.addEventListener("click", function () {
+                document.querySelectorAll(".permission-group").forEach(function (item) {
+                    if (item !== summary.parentElement) item.removeAttribute("open");
+                });
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterBox = document.getElementById("changelist-filter");
+        if (filterBox) {
+            const filterTitle = filterBox.querySelector("h2");
+
+            if (filterTitle) {
+                filterTitle.style.cursor = "pointer";
+
+                // ????? ?? ??????? ???? ?????? ??? ???????
+                Array.from(filterBox.children).forEach(function (child) {
+                    if (child.tagName !== "H2") {
+                        child.style.display = "none";
+                    }
+                });
+
+                // ??? ????? ??? ??????? ???? ??????
+                filterTitle.addEventListener("click", function () {
+                    const hidden = Array.from(filterBox.children).some(function (child) {
+                        return child.tagName !== "H2" && child.style.display === "none";
+                    });
+
+                    Array.from(filterBox.children).forEach(function (child) {
+                        if (child.tagName !== "H2") {
+                            child.style.display = hidden ? "block" : "none";
+                        }
+                    });
+                });
+            }
+        }
+    });
+</script>
+
+{% endblock %}
+
+

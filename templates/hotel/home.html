@@ -1,0 +1,510 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Home - {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-1 fw-bold mb-4 floating">
+                    Golden Stars Hotel
+                </h1>
+                <p class="lead mb-5">
+                    Enjoy an unforgettable luxury stay experience with the best services and modern facilities in the heart of the city
+                </p>
+                <div class="hero-buttons">
+                    <a href="{% url 'search_rooms' %}" class="btn btn-primary btn-lg px-5 me-3">
+                        <i class="fas fa-search me-2"></i>Book Now
+                    </a>
+                    <a href="#services" class="btn btn-outline-primary btn-lg px-5">
+                        <i class="fas fa-info-circle me-2"></i>Discover More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="search-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="search-form">
+                    <h3 class="text-center mb-4 text-white">
+                        <i class="fas fa-search me-2"></i>Find Your Perfect Room
+                    </h3>
+                    {% include 'hotel/includes/search_form.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="stats-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-white mb-3">Hotel Statistics</h2>
+            <p class="lead text-white opacity-75">Numbers that reflect our commitment to excellence and quality</p>
+        </div>
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="text-gold mb-3">
+                        <i class="fas fa-bed fa-3x"></i>
+                    </div>
+                    <span class="stat-number">{{ total_rooms }}</span>
+                    <div class="stat-label">Total Rooms</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="text-gold mb-3">
+                        <i class="fas fa-check-circle fa-3x"></i>
+                    </div>
+                    <span class="stat-number">{{ available_rooms }}</span>
+                    <div class="stat-label">Available Rooms</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="text-gold mb-3">
+                        <i class="fas fa-star fa-3x"></i>
+                    </div>
+                    <span class="stat-number">5</span>
+                    <div class="stat-label">Stars</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="text-gold mb-3">
+                        <i class="fas fa-users fa-3x"></i>
+                    </div>
+                    <span class="stat-number">{{ happy_customers }}</span>
+                    <div class="stat-label">Happy Customers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="gallery-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Photo Gallery</h2>
+            <p class="lead text-muted">Discover the beauty of the hotel and its luxurious design</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item">
+                    <img src="{% static 'images/luxury_modern_hotel_lobby_elegant_interior_design.jpg' %}" 
+                         alt="Hotel Lobby" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <span>Luxury Hotel Lobby</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item">
+                    <img src="{% static 'images/luxury-modern-hotel-bedroom-suite-elegant-decor.jpg' %}" 
+                         alt="Luxury Suite" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <span>Luxury Bedroom Suite</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item">
+                    <img src="{% static 'images/luxury_resort_pool_ocean_view_palm_trees.jpg' %}" 
+                         alt="Swimming Pool" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <span>Swimming Pool with Great View</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item">
+                    <img src="{% static 'images/elegant_hotel_restaurant_dining_area_luxurious_interior.jpg' %}" 
+                         alt="Hotel Restaurant" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <span>Elegant Hotel Restaurant</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item">
+                    <img src="{% static 'images/luxurious_hotel_spa_indoor_pool_wellness_center.jpg' %}" 
+                         alt="Spa Center" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <span>Spa & Wellness Center</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item">
+                    <img src="{% static 'images/modern_luxury_hotel_exterior_building_architecture.jpg' %}" 
+                         alt="Hotel Building" class="img-fluid">
+                    <div class="gallery-overlay">
+                        <span>Modern Architectural Design</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="services-section" id="services">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Our Premium Services</h2>
+            <p class="lead text-muted">We offer you a comprehensive range of luxury services</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-wifi"></i>
+                    <h5 class="mt-3 mb-2">Free WiFi</h5>
+                    <p class="text-muted">High-speed internet throughout the hotel</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-swimming-pool"></i>
+                    <h5 class="mt-3 mb-2">Swimming Pool</h5>
+                    <p class="text-muted">Luxury swimming pool with panoramic view</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-spa"></i>
+                    <h5 class="mt-3 mb-2">Spa Center</h5>
+                    <p class="text-muted">Specialized massage and relaxation services</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-utensils"></i>
+                    <h5 class="mt-3 mb-2">Fine Dining</h5>
+                    <p class="text-muted">Exceptional dining experience with international cuisine</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-dumbbell"></i>
+                    <h5 class="mt-3 mb-2">Fitness Center</h5>
+                    <p class="text-muted">Modern fitness facilities and advanced equipment</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-car"></i>
+                    <h5 class="mt-3 mb-2">Parking</h5>
+                    <p class="text-muted">Safe and free parking</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-concierge-bell"></i>
+                    <h5 class="mt-3 mb-2">Concierge Service</h5>
+                    <p class="text-muted">24/7 personal assistance</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="service-card">
+                    <i class="fas fa-plane"></i>
+                    <h5 class="mt-3 mb-2">Airport Transfer</h5>
+                    <p class="text-muted">Free transfer to and from the airport</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Room Types</h2>
+            <p class="lead text-muted">Choose from a variety of rooms designed for your comfort</p>
+        </div>
+        
+        <div class="row">
+            {% for room_type in room_types %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="room-card card h-100 shadow-lg border-0">
+                    {% load static %}
+                    <img src="{% static 'images/luxury-modern-hotel-bedroom-suite-elegant-decor.jpg' %}" class="card-img-top" alt="{{ room_type.get_name_display }}" style="height: 250px; object-fit: cover;">
+
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold text-charcoal">{{ room_type.get_name_display }}</h5>
+                        <p class="card-text text-muted mb-3">{{ room_type.description|truncatewords:15 }}</p>
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="price-display">
+                                {{ room_type.base_price }} JD / night
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-users me-1"></i>{{ room_type.max_occupancy }} guests
+                            </small>
+                        </div>
+
+                        {% if room_type.amenities %}
+                        <div class="mb-3">
+                            <h6 class="text-muted mb-2 fw-bold">Amenities:</h6>
+                            <div class="d-flex flex-wrap">
+                                {% for amenity in room_type.get_amenities_list|slice:":3" %}
+                                <span class="badge bg-gradient-secondary text-dark me-1 mb-1">
+                                    <i class="fas fa-check me-1"></i>{{ amenity }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <a href="{% url 'room_detail' room_type.id %}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-eye me-2"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'room_types' %}" class="btn btn-outline-primary btn-lg px-5">
+                <i class="fas fa-th-large me-2"></i>View All Rooms
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<section class="contact-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="contact-form">
+                    <h3 class="fw-bold mb-4 text-white">Ready to Experience Luxury?</h3>
+                    <p class="mb-4 text-white opacity-75">Book your room now and enjoy an exceptional stay experience with the best luxury services</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{% url 'search_rooms' %}" class="btn btn-primary btn-lg px-5">
+                            <i class="fas fa-calendar-plus me-2"></i>Book Now
+                        </a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-5">
+                            <i class="fas fa-phone me-2"></i>Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="contact-info text-white">
+                    <h4 class="fw-bold mb-4">Contact Information</h4>
+                    <div class="contact-item mb-3">
+                        <i class="fas fa-map-marker-alt me-3 text-gold"></i>
+                        <span>Amman, Jordan</span>
+                    </div>
+                    <div class="contact-item mb-3">
+                        <i class="fas fa-phone me-3 text-gold"></i>
+                        <span dir="ltr">+962 782182081</span>
+                    </div>
+                    <div class="contact-item mb-3">
+                        <i class="fas fa-envelope me-3 text-gold"></i>
+                        <span>info@ammanhotel.jo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, rgba(27, 75, 140, 0.9), rgba(212, 175, 55, 0.9)), 
+                url("{% static 'images/luxury_modern_hotel_lobby_elegant_interior_design.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    color: white;
+    position: relative;
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Search Section */
+.search-section {
+    background: linear-gradient(135deg, #1B4B8C 0%, #D4AF37 100%);
+    margin-top: -100px;
+    padding-top: 150px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Statistics Section */
+.stats-section {
+    background: linear-gradient(135deg, #D4AF37 0%, #1B4B8C 100%);
+    padding: 80px 0;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #D4AF37;
+    display: block;
+}
+
+.stat-label {
+    color: white;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.text-gold {
+    color: #D4AF37 !important;
+}
+
+/* Gallery Section */
+.gallery-section {
+    padding: 80px 0;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: scale(1.05);
+}
+
+.gallery-item img {
+    height: 250px;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+.gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+    transform: translateY(0);
+}
+
+/* Services Section */
+.services-section {
+    padding: 80px 0;
+    background-color: #f8f9fa;
+}
+
+.service-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+    height: 100%;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+}
+
+.service-card i {
+    font-size: 3rem;
+    color: #1B4B8C;
+    margin-bottom: 1rem;
+}
+
+/* Room Cards */
+.room-card {
+    transition: transform 0.3s ease;
+}
+
+.room-card:hover {
+    transform: translateY(-10px);
+}
+
+.price-display {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1B4B8C;
+}
+
+.text-charcoal {
+    color: #333 !important;
+}
+
+/* Contact Section */
+.contact-section {
+    background: linear-gradient(135deg, #1B4B8C 0%, #D4AF37 100%);
+    padding: 80px 0;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .display-1 {
+        font-size: 3rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+

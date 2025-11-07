@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\hotel",
+    "\\templates",
+    "\\templates\\admin",
+    "\\templates\\admin\\auth",
+    "\\templates\\admin\\auth\\group",
+    "\\templates\\email",
+    "\\templates\\hotel"
+  ],
+  "SelectedNode": "\\hotel\\admin.py",
+  "PreviewInSolutionExplorer": false
+}

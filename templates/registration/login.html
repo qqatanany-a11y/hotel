@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Login - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </h3>
+                </div>
+                <div class="card-body p-5">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Invalid username or password.</strong> Please try again.
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group mb-3">
+                            <label for="username" class="form-label">
+                                Username
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="username"
+                                       name="username"
+                                       value="{{ form.username.value|default:'' }}"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="password" class="form-label">
+                                Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password"
+                                       class="form-control"
+                                       id="password"
+                                       name="password"
+                                       required>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="next" value="{{ next }}">
+
+                        <div class="form-group mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+                                <label class="form-check-label" for="remember_me">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    
+                    <div class="text-center mb-3">
+                        <a href="{% url 'password_reset' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-key me-2"></i>Forgot your password?
+                        </a>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="mb-2">Don't have an account?</p>
+                        <a href="{% url 'register' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </a>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <a href="{% url 'home' %}" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Home
+                            </a>
+                            |
+                            <a href="{% url 'admin:index' %}" class="text-decoration-none ms-2">
+                                <i class="fas fa-cog me-1"></i>Admin Dashboard
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        border-radius: 0;
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border: 1px solid #ced4da;
+    }
+
+    .form-control {
+        border-left: none;
+    }
+
+        .form-control:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1B4B8C 0%, #D4AF37 100%);
+        border: none;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+    .btn-outline-primary {
+        border-color: #D4AF37;
+        color: #D4AF37;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #D4AF37;
+            border-color: #D4AF37;
+            color: white;
+        }
+
+    /* ????? ?? ???? ???? ?????? */
+    .btn-outline-warning {
+        border-color: #ffc107;
+        color: #ffc107;
+        font-weight: 500;
+    }
+
+        .btn-outline-warning:hover {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+            transform: translateY(-1px);
+            transition: all 0.3s ease;
+        }
+
+    /* ????? ??? ??????? */
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+    }
+
+    /* ????? ??????? ?? ?????? */
+    .text-muted a {
+        color: #6c757d !important;
+        transition: color 0.3s ease;
+    }
+
+        .text-muted a:hover {
+            color: #D4AF37 !important;
+        }
+</style>
+{% endblock %}
+

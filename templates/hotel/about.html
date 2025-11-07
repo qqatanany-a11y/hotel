@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}About Us - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-5">
+                <i class="fas fa-hotel me-2"></i>About Our Hotel
+            </h1>
+        </div>
+    </div>
+    
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h2 class="text-primary">Amman Golden Hotel</h2>
+            <p class="lead">Experience luxury hospitality in the heart of the city</p>
+            <p>We are proud to offer luxury hospitality services in the heart of the city. Our hotel provides an unforgettable stay experience with the latest facilities and excellent services.</p>
+        </div>
+        <div class="col-lg-6">
+            <div class="bg-light rounded p-4 text-center">
+                <i class="fas fa-hotel fa-5x text-primary mb-3"></i>
+                <h4>Welcome</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-award fa-3x text-warning mb-3"></i>
+                    <h5>High Quality</h5>
+                    <p>We are committed to providing the highest levels of service quality</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x text-info mb-3"></i>
+                    <h5>Excellent Service</h5>
+                    <p>Professional team available 24/7 to serve you</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-map-marker-alt fa-3x text-danger mb-3"></i>
+                    <h5>Perfect Location</h5>
+                    <p>In the heart of the city near the most important tourist attractions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Contact Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Address:</h6>
+                            <p>Amman, Jordan</p>
+                            
+                            <h6>Phone:</h6>
+                            <p>+962 782182081</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Email:</h6>
+                            <p>info@ammanhotel.jo</p>
+                            
+                            <h6>Website:</h6>
+                            <p><a href="https://ammanhotel.jo" target="_blank">www.ammanhotel.jo</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

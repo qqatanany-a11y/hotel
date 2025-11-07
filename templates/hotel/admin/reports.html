@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "???????? ???????????" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="fas fa-chart-bar me-2"></i>{% trans "???????? ???????????" %}
+                </h1>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>{% trans "?????? ????? ??????" %}
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bed me-2"></i>{% trans "???????? ?????" %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-primary">{{ room_stats.total }}</div>
+                            <small class="text-muted">{% trans "?????? ?????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-success">{{ room_stats.available }}</div>
+                            <small class="text-muted">{% trans "?????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-danger">{{ room_stats.occupied }}</div>
+                            <small class="text-muted">{% trans "??????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-warning">{{ room_stats.maintenance }}</div>
+                            <small class="text-muted">{% trans "?????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-dark">{{ room_stats.out_of_order }}</div>
+                            <small class="text-muted">{% trans "???? ??????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-info">
+                                {% widthratio room_stats.occupied room_stats.total 100 %}%
+                            </div>
+                            <small class="text-muted">{% trans "???? ???????" %}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>{% trans "???????? ????????" %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-primary">{{ booking_stats.total }}</div>
+                            <small class="text-muted">{% trans "?????? ????????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-warning">{{ booking_stats.pending }}</div>
+                            <small class="text-muted">{% trans "?? ????????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-success">{{ booking_stats.confirmed }}</div>
+                            <small class="text-muted">{% trans "?????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-info">{{ booking_stats.checked_in }}</div>
+                            <small class="text-muted">{% trans "????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-secondary">{{ booking_stats.checked_out }}</div>
+                            <small class="text-muted">{% trans "??????" %}</small>
+                        </div>
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="display-6 text-danger">{{ booking_stats.cancelled }}</div>
+                            <small class="text-muted">{% trans "?????" %}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-dollar-sign me-2"></i>{% trans "???????? ?????????" %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 text-center mb-3">
+                            <div class="display-6 text-success">
+                                {{ revenue_stats.total|floatformat:0|default:0 }}
+                            </div>
+                            <small class="text-muted">{% trans "?????? ????????? (?????)" %}</small>
+                        </div>
+                        <div class="col-6 text-center mb-3">
+                            <div class="display-6 text-info">{{ revenue_stats.count|default:0 }}</div>
+                            <small class="text-muted">{% trans "??? ?????????" %}</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="display-6 text-primary">
+                                {{ revenue_stats.average|floatformat:0|default:0 }}
+                            </div>
+                            <small class="text-muted">{% trans "????? ???? ?????? (?????)" %}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-star me-2"></i>{% trans "????? ????? ?????? ?????" %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if popular_room_types %}
+                    <div class="list-group list-group-flush">
+                        {% for room_type in popular_room_types %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <strong>{{ room_type.get_name_display }}</strong><br>
+                                <small class="text-muted">{{ room_type.base_price }} {% trans "?????/????" %}</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
+                                {{ room_type.booking_count }} {% trans "???" %}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">{% trans "?? ???? ?????? ?????" %}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tools me-2"></i>{% trans "??????? ?????" %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-primary w-100 h-100" onclick="exportReports('bookings')">
+                                <i class="fas fa-download fa-2x mb-2 d-block"></i>
+                                {% trans "????? ????? ????????" %}
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-success w-100 h-100" onclick="exportReports('revenue')">
+                                <i class="fas fa-chart-line fa-2x mb-2 d-block"></i>
+                                {% trans "????? ????? ?????????" %}
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-info w-100 h-100" onclick="exportReports('guests')">
+                                <i class="fas fa-users fa-2x mb-2 d-block"></i>
+                                {% trans "????? ????? ??????" %}
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-warning w-100 h-100" onclick="printReport()">
+                                <i class="fas fa-print fa-2x mb-2 d-block"></i>
+                                {% trans "????? ???????" %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-1px);
+}
+
+.display-6 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+@media print {
+    .btn, .card-header {
+        display: none !important;
+    }
+    
+    .card {
+        border: none !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .container-fluid {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function exportReports(type) {
+    // ???? ????? ??? ??????? ?????? ?????? ????????
+    alert(`{% trans "???? ????? ???? ????? ?????" %} ${type} {% trans "??????" %}`);
+}
+
+function printReport() {
+    window.print();
+}
+
+// ??? ????? ???? ????? ???????
+document.addEventListener('DOMContentLoaded', function() {
+    // ???? ????? Chart.js ??? ????? ?????? ???? ???????
+});
+</script>
+{% endblock %}
+
+
+

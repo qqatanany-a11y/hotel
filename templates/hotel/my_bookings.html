@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "My Bookings" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-calendar-check me-2"></i>{% trans "My Bookings" %}
+            </h1>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-plus fa-3x mb-3"></i>
+                            <h5>{% trans "Total Bookings" %}</h5>
+                            <h2>{{ page_obj.paginator.count }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <i class="fas fa-check-circle fa-3x mb-3"></i>
+                            <h5>{% trans "Active Bookings" %}</h5>
+                            <h2>{{ page_obj.object_list|length }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <form method="get" class="d-flex">
+                        <select name="status" class="form-select me-2">
+                            <option value="">{% trans "All Statuses" %}</option>
+                            {% for status_code, status_name in status_choices %}
+                            <option value="{{ status_code }}"
+                                    {% if status_filter == status_code %}selected{% endif %}>
+                                {{ status_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> {% trans "Filter" %}
+                        </button>
+                    </form>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="{% url 'search_rooms' %}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> {% trans "New Booking" %}
+                    </a>
+                </div>
+            </div>
+
+            {% if page_obj.object_list %}
+            <div class="row">
+                {% for booking in page_obj.object_list %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{% trans "Booking ID:" %} {{ booking.booking_id }}</strong>
+                            </div>
+                            <div>
+                                {% if booking.status == 'pending' %}
+                                <span class="badge bg-warning">{{ booking.get_status_display }}</span>
+                                {% elif booking.status == 'confirmed' %}
+                                <span class="badge bg-success">{{ booking.get_status_display }}</span>
+                                {% elif booking.status == 'checked_in' %}
+                                <span class="badge bg-info">{{ booking.get_status_display }}</span>
+                                {% elif booking.status == 'checked_out' %}
+                                <span class="badge bg-secondary">{{ booking.get_status_display }}</span>
+                                {% elif booking.status == 'cancelled' %}
+                                <span class="badge bg-danger">{{ booking.get_status_display }}</span>
+                                {% else %}
+                                <span class="badge bg-light text-dark">{{ booking.get_status_display }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <strong>{% trans "Room:" %}</strong><br>
+                                    <i class="fas fa-bed me-1"></i>{{ booking.room.room_type.get_name_display }}
+                                    <br>
+                                    <small class="text-muted">{% trans "Room Number" %} {{ booking.room.room_number }}</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>{% trans "Dates:" %}</strong><br>
+                                    <i class="fas fa-calendar me-1"></i>{{ booking.check_in_date }}
+                                    <br>
+                                    <i class="fas fa-calendar me-1"></i>{{ booking.check_out_date }}
+                                    <br>
+                                    <small class="text-muted">({{ booking.get_nights }} {% trans "night(s)" %})</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <strong>{% trans "Guests:" %}</strong><br>
+                                    <i class="fas fa-users me-1"></i>{{ booking.get_total_guests }} {% trans "person(s)" %}
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ booking.adults }} {% trans "adult(s)" %}
+                                        {% if booking.children > 0 %}
+                                        + {{ booking.children }} {% trans "child(ren)" %}
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>{% trans "Total Amount:" %}</strong><br>
+                                    <span class="h5 text-success">{{ booking.total_amount }} {% trans "JOD" %}</span>
+                                </div>
+                            </div>
+
+                            {% if booking.special_requests %}
+                            <div class="mb-3">
+                                <strong>{% trans "Special Requests:" %}</strong><br>
+                                <small class="text-muted">{{ booking.special_requests }}</small>
+                            </div>
+                            {% endif %}
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        {% trans "Booking Date:" %} {{ booking.created_at|date:"Y-m-d" }}
+                                    </small>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'booking_detail' booking.booking_id %}"
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>{% trans "Details" %}
+                                    </a>
+                                    {% if booking.can_cancel %}
+                                    <a href="{% url 'cancel_booking' booking.booking_id %}"
+                                       class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-times me-1"></i>{% trans "Cancel" %}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="{% trans 'Page Navigation' %}">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                            {% trans "Previous" %}
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for page_num in page_obj.paginator.page_range %}
+                    {% if page_num == page_obj.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_num }}</span>
+                    </li>
+                    {% elif page_num > page_obj.number|add:'-3' and page_num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_num }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                            {{ page_num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
+                            {% trans "Next" %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                <h4>{% trans "No bookings found" %}</h4>
+                <p class="text-muted">
+                    {% if status_filter %}
+                    {% trans "No bookings found with the selected status" %}
+                    {% else %}
+                    {% trans "You haven't made any bookings yet" %}
+                    {% endif %}
+                </p>
+                <a href="{% url 'search_rooms' %}" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>{% trans "Search for a room" %}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+    .badge {
+        font-size: 0.75em;
+    }
+
+    @media (max-width: 768px) {
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+            .btn-group .btn {
+                width: 100%;
+            }
+    }
+</style>
+{% endblock %}
+

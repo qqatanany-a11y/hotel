@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Profile" %} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body text-center">
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-user fa-2x"></i>
+                    </div>
+                    <h5>{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <span class="badge bg-success">{% trans "Active Member" %}</span>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>{% trans "Quick Statistics" %}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{% trans "Registration Date:" %}</span>
+                        <span class="fw-bold">{{ guest.created_at|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{% trans "Number of Bookings:" %}</span>
+                        <span class="fw-bold">{{ guest.bookings.count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>{% trans "Last Visit:" %}</span>
+                        <span class="fw-bold">{{ user.last_login|date:"d/m/Y"|default:"---" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-edit me-2"></i>{% trans "Profile Information" %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% crispy form %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>{% trans "Recent Bookings" %}
+                    </h6>
+                    <a href="{% url 'my_bookings' %}" class="btn btn-sm btn-outline-primary">
+                        {% trans "View All Bookings" %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if guest.bookings.all %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{% trans "Booking ID" %}</th>
+                                    <th>{% trans "Room" %}</th>
+                                    <th>{% trans "Check-in Date" %}</th>
+                                    <th>{% trans "Status" %}</th>
+                                    <th>{% trans "Amount" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in guest.bookings.all|slice:":5" %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'booking_detail' booking.booking_id %}" class="text-decoration-none">
+                                            {{ booking.booking_id }}
+                                        </a>
+                                    </td>
+                                    <td>{% trans "Room" %} {{ booking.room.room_number }}</td>
+                                    <td>{{ booking.check_in_date }}</td>
+                                    <td>
+                                        {% if booking.status == 'pending' %}
+                                        <span class="badge bg-warning">{% trans "Pending" %}</span>
+                                        {% elif booking.status == 'confirmed' %}
+                                        <span class="badge bg-success">{% trans "Confirmed" %}</span>
+                                        {% elif booking.status == 'cancelled' %}
+                                        <span class="badge bg-danger">{% trans "Cancelled" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ booking.total_amount }} {% trans "JOD" %}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <h6>{% trans "No bookings yet" %}</h6>
+                        <p class="text-muted">{% trans "Start by booking your first room with us" %}</p>
+                        <a href="{% url 'search_rooms' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>{% trans "New Booking" %}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

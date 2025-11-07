@@ -1,0 +1,257 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}Search & Book - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-search me-2"></i>Search Rooms
+            </h1>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Search for Available Rooms</h5>
+                    {% if search_performed %}
+                    <form method="get" novalidate>
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                    {% else %}
+                    <form method="get" novalidate>
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if search_performed %}
+            {% if grouped_rooms %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>Available Rooms ({{ grouped_rooms|length }})</h4>
+                <small class="text-muted">
+                    {% if form.check_in_date.value and form.check_out_date.value %}
+                    From {{ form.check_in_date.value }} to {{ form.check_out_date.value }}
+                    {% endif %}
+                </small>
+            </div>
+
+            <div class="row">
+                {% for item in grouped_rooms %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 shadow-sm room-card">
+                        <div class="row g-0 h-100">
+                            <div class="col-md-4">
+                                <img src="{% static 'images/luxury-modern-hotel-bedroom-suite-elegant-decor.jpg' %}"
+                                     class="img-fluid rounded-start h-100"
+                                     alt="{{ item.room_type__name }}"
+                                     style="object-fit: cover;">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body d-flex flex-column h-100">
+                                    <div>
+                                        <h5 class="card-title">
+                                            {{ item.room_type__name }}
+                                            <span class="badge bg-primary ms-2">Floor {{ item.floor }}</span>
+                                        </h5>
+
+                                        <p class="card-text text-muted">
+                                            Experience comfort and style with our {{ item.room_type__name }} rooms, offering modern decor and premium amenities for your stay.
+                                        </p>
+
+                                        <div class="row text-center mb-3">
+                                            <div class="col-6">
+                                                <small class="text-muted">Available</small>
+                                                <div class="fw-bold text-success">{{ item.total_rooms }}</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Price / Night</small>
+                                                <div class="fw-bold text-primary">{{ item.base_price|floatformat:0 }} JD</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <small class="text-muted">Amenities:</small>
+                                            <div class="d-flex flex-wrap mt-1">
+                                                <span class="badge bg-light text-dark me-1 mb-1"><i class="fas fa-wifi me-1 text-success"></i>Free Wi-Fi</span>
+                                                <span class="badge bg-light text-dark me-1 mb-1"><i class="fas fa-tv me-1 text-success"></i>Smart TV</span>
+                                                <span class="badge bg-light text-dark me-1 mb-1"><i class="fas fa-coffee me-1 text-success"></i>Mini Bar</span>
+                                                <span class="badge bg-light text-dark me-1 mb-1"><i class="fas fa-snowflake me-1 text-success"></i>AC</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <div class="price-display">
+                                                <span class="h5 text-primary">{{ item.base_price|floatformat:0 }} JD</span>
+                                                <small class="text-muted">/night</small>
+                                            </div>
+                                            <span class="badge bg-success">Available</span>
+                                        </div>
+
+                                        <div class="d-grid gap-2">
+                                            <a href="{% url 'room_detail' item.room_type__id %}"
+                                               class="btn btn-outline-secondary btn-sm"
+                                               style="position: relative; z-index: 2;"
+                                               onclick="event.stopPropagation();">
+                                                <i class="fas fa-info-circle me-2"></i>View Details
+                                            </a>
+
+                                            {% if item.first_room_id %}
+                                            <a href="{% url 'book_room' item.first_room_id %}?check_in={{ form.check_in_date.value }}&check_out={{ form.check_out_date.value }}&adults={{ form.adults.value }}&children={{ form.children.value }}"
+                                               class="btn btn-primary"
+                                               style="position: relative; z-index: 1;"
+                                               onclick="event.stopPropagation();">
+                                                <i class="fas fa-calendar-plus me-2"></i>Book Now
+                                            </a>
+                                            {% else %}
+                                            <button class="btn btn-secondary" disabled>
+                                                <i class="fas fa-calendar-times me-2"></i>Not Available
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-search fa-3x text-muted"></i>
+                </div>
+                <h4 class="text-muted">No rooms found</h4>
+                <p class="text-muted">Try adjusting your search criteria</p>
+                <a href="{% url 'search_rooms' %}" class="btn btn-primary">
+                    <i class="fas fa-redo me-2"></i>Search Again
+                </a>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-bed fa-3x text-primary"></i>
+                </div>
+                <h4>Find Your Perfect Room</h4>
+                <p class="text-muted">Enter your travel dates and preferences to search for available rooms</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .price-display {
+        font-weight: bold;
+    }
+
+    .room-card {
+        transition: all 0.3s ease;
+    }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+    .badge {
+        font-size: 0.75em;
+    }
+
+    .card-body {
+        position: relative;
+    }
+
+    .availability-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .row.g-0 {
+            flex-direction: column;
+        }
+
+        .col-md-4 img {
+            height: 200px;
+            border-radius: 0.375rem 0.375rem 0 0 !important;
+        }
+    }
+    form {
+        max-width: 450px; /* ✅ عرض أكبر للفورم */
+    }
+
+        form input,
+        form select {
+            width: 100%;
+            height: 55px; /* ✅ زدت الطول من 45 إلى 55 */
+            padding: 14px 18px; /* ✅ زدت المسافة الداخلية */
+            font-size: 1.1rem; /* ✅ الخط أكبر شوي */
+            color: #fff;
+            background-color: #2b3a4a;
+            border: 1px solid #444;
+            border-radius: 10px; /* ✅ زوايا أنعم */
+            margin-bottom: 18px;
+        }
+
+        form label {
+            font-weight: 600;
+            color: #d1d1d1;
+            margin-bottom: 6px;
+            display: block;
+            font-size: 1rem;
+        }
+
+        form button {
+            width: 100%;
+            height: 55px; /* نفس ارتفاع الحقول */
+            background: linear-gradient(135deg, #f5c542, #d4af37);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-size: 1.05rem;
+        }
+
+            form button:hover {
+                opacity: 0.9;
+            }
+
+        form select {
+            appearance: none;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+            form select option {
+                color: #000;
+                background: #fff;
+            }
+
+</style>
+{% endblock %}

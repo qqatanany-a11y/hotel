@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Room Types - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4 text-center">
+                <i class="fas fa-bed me-2"></i>Room Types
+            </h1>
+            <p class="text-center text-muted mb-5">
+                Choose from a variety of rooms specially designed for your comfort and exceptional stay
+            </p>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for room_type in room_types %}
+        <div class="col-lg-4 col-md-6 mb-5">
+            <div class="card h-100 shadow-lg border-0 room-card">
+                <img src="{% static 'images/luxury-modern-hotel-bedroom-suite-elegant-decor.jpg' %}" class="card-img-top" alt="{{ room_type.get_name_display }}" style="height: 250px; object-fit: cover;">
+                
+                <div class="card-body d-flex flex-column">
+                    <h4 class="card-title text-primary fw-bold">{{ room_type.get_name_display }}</h4>
+                    <p class="card-text text-muted flex-grow-1">{{ room_type.description }}</p>
+                    
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <div class="bg-light rounded p-2">
+                                <i class="fas fa-users text-primary"></i>
+                                <div class="fw-bold">{{ room_type.max_occupancy }}</div>
+                                <small class="text-muted">Guests</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-light rounded p-2">
+                                <i class="fas fa-tag text-success"></i>
+                                <div class="fw-bold">{{ room_type.base_price }}</div>
+                                <small class="text-muted">JD/night</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if room_type.amenities %}
+                    <div class="mb-3">
+                        <h6 class="text-primary mb-2">
+                            <i class="fas fa-star me-1"></i>Amenities:
+                        </h6>
+                        <div class="d-flex flex-wrap">
+                            {% for amenity in room_type.get_amenities_list %}
+                                <span class="badge bg-light text-dark me-1 mb-1">
+                                    <i class="fas fa-check me-1 text-success"></i>{{ amenity }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer bg-transparent border-0 pt-0">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'room_detail' room_type.id %}" class="btn btn-outline-primary">
+                            <i class="fas fa-eye me-2"></i>View Details
+                        </a>
+                        <a href="{% url 'search_rooms' %}?room_type={{ room_type.id }}" class="btn btn-primary">
+                            <i class="fas fa-calendar-plus me-2"></i>Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <div class="bg-light rounded p-4">
+                <h5 class="mb-3">Need help choosing?</h5>
+                <p class="text-muted mb-3">Our customer service team is available to help you choose the right room</p>
+                <a href="{% url 'contact' %}" class="btn btn-outline-primary me-3">
+                    <i class="fas fa-phone me-2"></i>Contact Us
+                </a>
+                <a href="{% url 'search_rooms' %}" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>Advanced Search
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.room-card {
+    transition: all 0.4s ease;
+    transform: translateY(0);
+}
+
+.room-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+
+.room-card img {
+    transition: transform 0.4s ease;
+}
+
+.room-card:hover img {
+    transform: scale(1.05);
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+</style>
+{% endblock %}
+

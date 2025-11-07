@@ -1,0 +1,97 @@
+﻿<div id="app-list">
+    {% for app in app_list %}
+    <div class="app-section" data-app="{{ app.name|slugify }}">
+        <div class="app-header">{{ app.name|capfirst }}</div>
+        <div class="app-models">
+            {% for model in app.models %}
+            <a href="{{ model.admin_url }}" class="model-link">{{ model.name|capfirst }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const sections = document.querySelectorAll(".app-section");
+
+        const saved = localStorage.getItem("openApp");
+        if (saved) {
+            const s = Array.from(sections).find(sec => sec.dataset.app === saved);
+            if (s) s.querySelector(".app-models").classList.add("open");
+        }
+        sections.forEach(sec => {
+            const header = sec.querySelector(".app-header");
+            const models = sec.querySelector(".app-models");
+            const key = sec.dataset.app;
+
+            header.addEventListener("click", () => {
+                document.querySelectorAll(".app-models.open").forEach(m => {
+                    if (m !== models) m.classList.remove("open");
+                });
+
+                const willOpen = !models.classList.contains("open");
+                models.classList.toggle("open", willOpen);
+                if (willOpen) localStorage.setItem("openApp", key);
+                else localStorage.removeItem("openApp");
+            });
+        });
+        document.querySelectorAll(".model-link").forEach(a => {
+            a.addEventListener("click", () => {
+                const opened = document.querySelector(".app-models.open");
+                if (opened) {
+                    localStorage.setItem("openApp", opened.closest(".app-section").dataset.app);
+                }
+            }, { capture: true });
+        });
+    });
+</script>
+
+<style>
+    .app-section {
+        margin-bottom: 10px;
+        border: 1px solid #d4af37;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #111;
+        transition: all 0.3s ease;
+    }
+
+    .app-header {
+        background: linear-gradient(135deg, #000, #1a1a1a);
+        color: #d4af37;
+        padding: 10px 15px;
+        font-weight: 600;
+        cursor: pointer;
+        text-transform: uppercase;
+    }
+
+        .app-header:hover {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+        }
+
+    .app-models {
+        display: none;
+        padding: 10px 25px;
+        background-color: #0b0b0b;
+    }
+
+        .app-models.open {
+            display: block;
+        }
+
+    .model-link {
+        display: block;
+        color: #f1c232;
+        font-size: 13px;
+        padding: 5px 0;
+        border-bottom: 1px solid #222;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .model-link:hover {
+            color: #ffe082;
+
+        }
+</style>

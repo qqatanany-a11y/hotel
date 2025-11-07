@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1B4B8C 0%, #D4AF37 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .content {
+            background: #f9f9f9;
+            padding: 30px;
+            border: 1px solid #ddd;
+        }
+
+        .booking-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #D4AF37;
+        }
+
+        .footer {
+            background: #1B4B8C;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .highlight {
+            color: #D4AF37;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏨 {{ hotel_name|default:"Golden Hotel" }}</h1>
+        <h2>Booking Confirmation</h2>
+    </div>
+
+    <div class="content">
+        <p>Dear <strong>{{ guest_name }}</strong>,</p>
+
+        <p>Thank you for choosing our hotel! Your booking has been confirmed.</p>
+
+        <div class="booking-details">
+            <h3>📋 Booking Details</h3>
+            <p><strong>Booking ID:</strong> <span class="highlight">{{ booking.booking_id }}</span></p>
+            <p><strong>Room:</strong> {{ booking.room.room_type.get_name_display }} (Room {{ booking.room.room_number }})</p>
+            <p><strong>Check-in Date:</strong> {{ booking.check_in_date|date:"F d, Y" }}</p>
+            <p><strong>Check-out Date:</strong> {{ booking.check_out_date|date:"F d, Y" }}</p>
+            <p><strong>Guests:</strong> {{ booking.adults }} Adults{% if booking.children > 0 %}, {{ booking.children }} Children{% endif %}</p>
+            <p><strong>Total Amount:</strong> <span class="highlight">${{ booking.total_amount }}</span></p>
+
+            
+            <p>
+                <strong>Payment Status:</strong>
+                <span class="highlight">
+                    {% if payment.status == 'pending' %}
+                    Waiting for payment
+                    {% else %}
+                    {{ payment.status|title }}
+                    {% endif %}
+                </span>
+            </p>
+        </div>
+
+        <h3>🏨 Hotel Information</h3>
+        <p><strong>Address:</strong> {{ hotel_address|default:"Hotel Address" }}</p>
+        <p><strong>Phone:</strong> {{ hotel_phone|default:"+962-6-XXXXXX" }}</p>
+        <p><strong>Email:</strong> {{ hotel_email|default:"info@goldenhotel.com" }}</p>
+
+        <p>We look forward to welcoming you!</p>
+
+        <p>
+            Best regards,<br>
+            <strong>Golden Hotel Team</strong>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>© 2024 Golden Hotel. All rights reserved.</p>
+    </div>
+</body>
+</html>
+
+

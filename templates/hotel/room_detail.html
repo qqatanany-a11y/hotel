@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ room_type.get_name_display }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            
+            <div class="card shadow-sm mb-4">
+                <img src="{% static 'images/luxury-modern-hotel-bedroom-suite-elegant-decor.jpg' %}" class="card-img-top rounded" alt="{{ room_type.get_name_display }}" style="height: 400px; object-fit: cover;">
+            </div>
+            
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-bed me-2"></i>{{ room_type.get_name_display }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ room_type.description }}</p>
+                    
+                    {% if amenities %}
+                    <div class="mt-4">
+                        <h5 class="text-primary mb-3">
+                            <i class="fas fa-star me-2"></i>Amenities & Services
+                        </h5>
+                        <div class="row">
+                            {% for amenity in amenities %}
+                            <div class="col-md-6 mb-2">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>{{ amenity }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            
+            <div class="card shadow-sm mb-4 sticky-top" style="top: 100px;">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-calendar-plus me-2"></i>Booking Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="display-6 text-success fw-bold">{{ room_type.base_price }} JD</div>
+                        <small class="text-muted">per night</small>
+                    </div>
+                    
+                    <div class="row text-center mb-4">
+                        <div class="col-6">
+                            <div class="bg-light rounded p-3">
+                                <i class="fas fa-users text-primary fa-2x mb-2"></i>
+                                <div class="fw-bold">{{ room_type.max_occupancy }}</div>
+                                <small class="text-muted">Max Guests</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-light rounded p-3">
+                                <i class="fas fa-door-open text-info fa-2x mb-2"></i>
+                                <div class="fw-bold">{{ available_rooms }}</div>
+                                <small class="text-muted">Available Rooms</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if available_rooms > 0 %}
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'search_rooms' %}?room_type={{ room_type.id }}" class="btn btn-success btn-lg">
+                                <i class="fas fa-calendar-plus me-2"></i>Book Now
+                            </a>
+                            <a href="{% url 'search_rooms' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-search me-2"></i>Advanced Search
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="text-center">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Currently Unavailable
+                            </div>
+                            <a href="{% url 'search_rooms' %}" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Search Other Rooms
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-headset me-2"></i>Need Help?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">Our customer service team is available 24/7 to help you</p>
+                    <div class="d-grid gap-2">
+                        <a href="tel:+962782182081" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-phone me-2"></i>+962 782182081
+                        </a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-envelope me-2"></i>Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <nav aria-label="Room navigation">
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'room_types' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Room Types
+                    </a>
+                    <a href="{% url 'search_rooms' %}" class="btn btn-primary">
+                        <i class="fas fa-search me-2"></i>Search Other Rooms
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.sticky-top {
+    z-index: 1020;
+}
+
+.display-6 {
+    font-size: 2.5rem;
+}
+
+@media (max-width: 992px) {
+    .sticky-top {
+        position: static !important;
+    }
+}
+</style>
+{% endblock %}
+

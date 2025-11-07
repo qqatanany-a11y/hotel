@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px 15px 0 0 !important;
+        padding: 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        display: inline-block;
+        width: calc(100% - 35px);
+        vertical-align: middle;
+        text-align: left;
+    }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+    /* ???????? ? */
+    .info-icon {
+        cursor: pointer;
+        margin-left: 6px;
+        color: #667eea;
+        font-weight: bold;
+        font-size: 1.1em;
+        display: inline-block;
+        vertical-align: middle;
+        position: relative;
+    }
+
+    /* ????? ????? ??? tooltip */
+    .tooltip-box {
+        position: absolute;
+        background-color: #343a40;
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.85em;
+        max-width: 240px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        z-index: 9999;
+        white-space: pre-line;
+        opacity: 0;
+        transform: scale(0.95);
+        transition: all 0.15s ease-out;
+    }
+
+        .tooltip-box.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+    /* ????? */
+    .tooltip-arrow {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-style: solid;
+    }
+
+        .tooltip-arrow.up {
+            border-width: 6px 6px 0 6px;
+            border-color: #343a40 transparent transparent transparent;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .tooltip-arrow.down {
+            border-width: 0 6px 6px 6px;
+            border-color: transparent transparent #343a40 transparent;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+    /* ????? ????????? ??????? */
+    .form-text,
+    .helptext,
+    .text-muted,
+    small.text-muted,
+    .help-block,
+    .form-group small,
+    div[id*="help"],
+    span[class*="help"],
+    .crispy-field small,
+    .crispy-field .form-text {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3 class="text-white mb-0">Create Account</h3>
+                    <p class="text-white-50 mb-0">Join our community today</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="registration-form">
+                        {% csrf_token %}
+                        {% crispy form %}
+                    </form>
+                    <div class="text-center mt-3">
+                        <p class="mb-0">
+                            Already have an account?
+                            <a href="{% url 'login' %}" class="text-primary fw-bold">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+            const helpSelectors = [
+                '.form-text',
+                '.helptext',
+                '.text-muted',
+                'small.text-muted',
+                '.help-block',
+                '.form-group small',
+                'div[id*="help"]',
+                'span[class*="help"]',
+                '.crispy-field small',
+                '.crispy-field .form-text',
+                'small',
+                '.text-muted small'
+            ];
+
+            helpSelectors.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    const text = element.textContent.trim();
+                    if (text.length > 0) {
+                        const icon = document.createElement('span');
+                        icon.classList.add('info-icon');
+                        icon.textContent = '?';
+                        icon.dataset.tooltip = text;
+                        element.style.display = 'none';
+                        const inputField = element.closest('.form-group, .mb-3, .field-wrapper, div')?.querySelector('input, select, textarea');
+                        if (inputField && !inputField.nextSibling?.classList?.contains('info-icon')) {
+                            inputField.insertAdjacentElement('afterend', icon);
+                        }
+
+                        // ???? ??? ??? tooltip ?????
+                        icon.addEventListener('mouseenter', function () {
+                            const tooltip = document.createElement('div');
+                            tooltip.classList.add('tooltip-box');
+                            tooltip.textContent = icon.dataset.tooltip;
+                            document.body.appendChild(tooltip);
+
+                            const rect = icon.getBoundingClientRect();
+                            const tooltipRect = tooltip.getBoundingClientRect();
+                            const spaceBelow = window.innerHeight - rect.bottom;
+                            const spaceAbove = rect.top;
+
+                            const arrow = document.createElement('div');
+                            arrow.classList.add('tooltip-arrow');
+                            tooltip.appendChild(arrow);
+
+                            if (spaceBelow > tooltipRect.height + 20) {
+                                // ???? ???
+                                tooltip.style.top = rect.bottom + window.scrollY + 10 + 'px';
+                                arrow.classList.add('up');
+                            } else if (spaceAbove > tooltipRect.height + 20) {
+                                // ???? ???
+                                tooltip.style.top = rect.top + window.scrollY - tooltipRect.height - 14 + 'px';
+                                arrow.classList.add('down');
+                            } else {
+                                // ??? ?????? fallback
+                                tooltip.style.top = rect.bottom + window.scrollY + 10 + 'px';
+                                arrow.classList.add('up');
+                            }
+
+                            tooltip.style.left = rect.left + window.scrollX + rect.width / 2 - tooltipRect.width / 2 + 'px';
+                            tooltip.classList.add('visible');
+
+                            icon.addEventListener('mouseleave', function removeTooltip() {
+                                tooltip.remove();
+                                icon.removeEventListener('mouseleave', removeTooltip);
+                            });
+                        });
+                    }
+                });
+            });
+        }, 500);
+    });
+</script>
+{% endblock %}
+
+

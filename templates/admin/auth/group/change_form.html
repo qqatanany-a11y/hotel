@@ -1,0 +1,253 @@
+﻿{# templates/admin/auth/group/change_form.html #}
+{% extends "admin/change_form.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    :root {
+        --bg: #0b0b0b;
+        --panel: #0e0e0e;
+        --panel-2: #151515;
+        --border: #d4af37;
+        --text: #e5e5e5;
+        --accent: #f1c232;
+    }
+
+    /* hide default widget */
+    #id_permissions, .selector, .selector-available, .selector-chosen, .selector-filter {
+        display: none !important
+    }
+
+    /* two columns only */
+    .ds-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 8px;
+        align-items: stretch
+    }
+
+    /* panes */
+    .ds-pane {
+        background: linear-gradient(135deg,var(--panel),var(--panel-2));
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        min-height: 200px;
+        max-height: 280px;
+        overflow: auto;
+        color: var(--accent)
+    }
+
+    .ds-title {
+        font: 600 13px/1.2 "Poppins","Segoe UI",sans-serif;
+        color: var(--accent);
+        margin: 0 0 8px
+    }
+
+    /* folders */
+    .ds-folder {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+        background: linear-gradient(135deg,var(--panel),var(--panel-2))
+    }
+
+    .ds-h {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 10px 12px;
+        border-bottom: 1px solid #222;
+        background: linear-gradient(135deg,#000,#1a1a1a);
+        color: var(--border)
+    }
+
+        .ds-h .name {
+            font: 600 12.5px "Poppins","Segoe UI",sans-serif
+        }
+
+        .ds-h .chev {
+            font: 11px;
+            color: var(--accent);
+            transition: transform .2s
+        }
+
+    .ds-folder.open .ds-h .chev {
+        transform: rotate(180deg)
+    }
+
+    .ds-b {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height .25s ease,padding .25s ease;
+        padding: 0 10px;
+        background: #0c0c0c
+    }
+
+    .ds-folder.open .ds-b {
+        max-height: 200px;
+        padding: 8px 10px
+    }
+
+    /* items */
+    .ds-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px;
+        border-radius: 8px;
+        color: var(--accent);
+        font-size: 12.5px
+    }
+
+        .ds-item:hover {
+            background: #161616
+        }
+
+        .ds-item input {
+            transform: scale(.95)
+        }
+
+    /* scrollbar */
+    .ds-pane, .ds-b {
+        scrollbar-width: thin;
+        scrollbar-color: #d4af37 #0b0b0b
+    }
+
+        .ds-pane::-webkit-scrollbar, .ds-b::-webkit-scrollbar {
+            width: 10px
+        }
+
+        .ds-pane::-webkit-scrollbar-track, .ds-b::-webkit-scrollbar-track {
+            background: #0b0b0b;
+            border-left: 1px solid #222
+        }
+
+        .ds-pane::-webkit-scrollbar-thumb, .ds-b::-webkit-scrollbar-thumb {
+            background: #1f1f1f;
+            border: 1px solid var(--border);
+            border-radius: 8px
+        }
+
+            .ds-pane::-webkit-scrollbar-thumb:hover, .ds-b::-webkit-scrollbar-thumb:hover {
+                background: #2a2a2a
+            }
+
+    body {
+        background-color: var(--bg)
+    }
+
+    @media (max-width:900px) {
+        .ds-pane {
+            max-height: 220px
+        }
+
+        .ds-folder.open .ds-b {
+            max-height: 160px
+        }
+    }
+    #id_permissions_helptext,
+    #id_permissions + .help,
+    .form-row.field-permissions .help,
+    .aligned .help {
+        display: none !important;
+    }
+
+</style>
+{% endblock %}
+
+{% block after_field_sets %}
+{{ block.super }}
+<div id="ds-perms"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const original = document.getElementById('id_permissions');
+        if (!original) return;
+
+        // shell
+        const root = document.getElementById('ds-perms');
+        const wrap = document.createElement('div'); wrap.className = 'ds-wrap';
+        const left = document.createElement('div'); left.className = 'ds-pane';
+        const right = document.createElement('div'); right.className = 'ds-pane';
+        left.innerHTML = '<div class="ds-title">Available</div>';
+        right.innerHTML = '<div class="ds-title">Chosen</div>';
+        wrap.append(left, right); root.append(wrap);
+
+        // group by model
+        const groups = {};
+        Array.from(original.options).forEach(opt => {
+            const parts = opt.text.split('|').map(s => s.trim()); // app | model | perm
+            const model = parts[1] || 'Other';
+            (groups[model] ||= []).push({ text: parts[2] || opt.text, value: opt.value, selected: opt.selected });
+        });
+
+        // helpers
+        function sync(value, on) {
+            const o = Array.from(original.options).find(x => x.value == value);
+            if (o) o.selected = on;
+        }
+        function ensureFolder(col, name) {
+            let f = col.querySelector(`.ds-folder[data-model="${CSS.escape(name)}"]`);
+            if (!f) {
+                f = document.createElement('div'); f.className = 'ds-folder'; f.dataset.model = name;
+                const h = document.createElement('div'); h.className = 'ds-h';
+                const n = Object.assign(document.createElement('span'), { className: 'name', textContent: name });
+                const chev = Object.assign(document.createElement('span'), { className: 'chev', textContent: '▾' });
+                h.append(n, chev);
+                const b = document.createElement('div'); b.className = 'ds-b';
+                f.append(h, b); col.appendChild(f);
+                h.addEventListener('click', () => f.classList.toggle('open'));
+            }
+            return f;
+        }
+
+        // left pane: all items
+        Object.keys(groups).sort().forEach(m => {
+            const fLeft = ensureFolder(left, m);
+            const body = fLeft.querySelector('.ds-b');
+            groups[m].forEach(p => {
+                const label = document.createElement('label'); label.className = 'ds-item'; label.dataset.value = p.value; label.dataset.model = m;
+                const cb = Object.assign(document.createElement('input'), { type: 'checkbox', checked: p.selected });
+                label.append(cb, document.createTextNode(p.text));
+                body.appendChild(label);
+                cb.addEventListener('change', () => { sync(p.value, cb.checked); refreshChosen(); });
+            });
+            // start closed
+        });
+
+        // right pane: selected only
+        function refreshChosen() {
+            right.innerHTML = '<div class="ds-title">Chosen</div>';
+            const byModel = {};
+            left.querySelectorAll('.ds-item input:checked').forEach(cb => {
+                const label = cb.closest('.ds-item');
+                const model = label.dataset.model;
+                (byModel[model] ||= []).push({ text: label.textContent.trim(), value: label.dataset.value });
+            });
+
+            Object.keys(byModel).sort().forEach(m => {
+                const f = ensureFolder(right, m);
+                const body = f.querySelector('.ds-b');
+                body.innerHTML = '';
+                byModel[m].forEach(p => {
+                    const row = document.createElement('label'); row.className = 'ds-item';
+                    const mirror = Object.assign(document.createElement('input'), { type: 'checkbox', checked: true });
+                    mirror.addEventListener('change', () => {
+                        const leftCb = left.querySelector(`.ds-item[data-value="${CSS.escape(p.value)}"] input`);
+                        if (leftCb && leftCb.checked) { leftCb.checked = false; leftCb.dispatchEvent(new Event('change')); }
+                    });
+                    row.append(mirror, document.createTextNode(p.text));
+                    body.appendChild(row);
+                });
+                // start closed
+            });
+        }
+
+        refreshChosen();
+    });
+</script>
+{% endblock %}
